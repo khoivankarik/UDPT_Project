@@ -105,15 +105,13 @@
             <div class="search-btn">
                 <i class="fas fa-search"></i>
             </div>
-            <a href="" class="btn btn-login">Log in</a>
-                <a href="" class="btn btn-register">Sign up</a> 
-            {% comment %} {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
                 <a href="{% url 'login' %}" class="btn btn-login">Profile</a>
                 <a href="{% url 'logout' %}" class="btn btn-register">Logout</a> 
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-login">Log in</a>
                 <a href="{% url 'register' %}" class="btn btn-register">Sign up</a> 
-            {% endif %} {% endcomment %}
+            {% endif %}
         </div>
     </nav>
 </div>
