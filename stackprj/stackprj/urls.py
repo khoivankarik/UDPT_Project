@@ -31,7 +31,7 @@ urlpatterns = [
     path('logout/', auth_view.LogoutView.as_view(template_name="stackusers/logout.html"), name='logout'),
     #Profile system
     path('profile/',user_view.profile,name="profile"),
-
+    path('profile/update/', user_view.profile_update, name="profile_update")
 ]
 
 if settings.DEBUG:
