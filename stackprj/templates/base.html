@@ -76,9 +76,9 @@
         <div class="nav-search">
             <div class="search-container">
                 <i class="fas fa-search"></i>
-                <form action="" method="GET">
-                    <input type="text" id="" name="search-area" placeholder="Search...">
-                    <button type="submit" style="margin-left: 340px; border-radius: 25px; border: none; padding: 8px;">Search</button>
+                <form action="{% url 'stackbase:question-lists' %}" method="GET">
+                    <input type="text" id="search-bar" name="search-bar" placeholder="Search..." value="{{ search_input }}">
+                    <button type="submit" style="border-radius: 25px; border: none; padding: 8px;">Search</button>
                 </form>
             </div>
             <div class="search-hints">

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
+        
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -312,7 +312,7 @@ a{
       
           <!-- Remind Passowrd -->
           <div id="formFooter">
-            <p>Already have an account? <a class="underlineHover" href="">Login </a></p>
+            <p>Already have an account? <a class="underlineHover" href="{% url 'login' %}">Login </a></p>
           </div>
       
         </div>
