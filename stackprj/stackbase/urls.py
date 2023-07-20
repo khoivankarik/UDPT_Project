@@ -15,5 +15,7 @@ urlpatterns = [
     path('questions/<int:pk>/delete/', views.QuestionDeleteView.as_view(), name="question-delete"),
     path('questions/<int:pk>/comment/', views.AddCommentView.as_view(), name="question-comment"),
     path('like/<int:pk>', views.like_view, name="like_post"),
-    path('questions/tags/<str:tag>/', views.TagQuestionListView.as_view(), name="tag-question-lists")
+    path('questions/tags/<str:tag>/', views.TagQuestionListView.as_view(), name="tag-question-lists"),
+    path('get_tags/', views.get_tags, name='get_tags'),
+    path('questions/category/<str:category>/', views.CategoryQuestionListView.as_view(), name="category-question-lists"),
 ]

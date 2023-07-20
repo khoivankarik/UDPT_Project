@@ -3,11 +3,12 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .models import Question, Comment, Tag
+from .models import Question, Comment, Tag, Category
 from .forms import CommentForm
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from urllib.parse import unquote
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'home.html')
@@ -75,16 +76,33 @@ class QuestionDetailView(DetailView):
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
-    fields = ['title', 'content', 'tags']
+    fields = ['title', 'content', 'category', 'tags']
     context_object_name = 'question'
 
     def form_valid(self, form):
+        if form.instance.category is None:
+            # Handle case where category is not selected
+            form.add_error('category', 'Please select a category.')
+            return self.form_invalid(form)
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if self.request.method == 'POST':
+            category_id = self.request.POST.get('category')
+            if category_id:
+                category = Category.objects.get(id=category_id)
+                form.fields['tags'].queryset = category.tags.all()
+            else:
+                form.fields['tags'].queryset = Tag.objects.none()
+        else:
+            form.fields['tags'].queryset = Tag.objects.none()
+        return form
+
 class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
     model = Question
-    fields = ['title', 'content', 'tags']
+    fields = ['title', 'content', 'category', 'tags']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -95,6 +113,19 @@ class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
         if self.request.user == question.user:
             return True
         return False
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if self.request.method == 'POST':
+            category_id = self.request.POST.get('category')
+            if category_id:
+                category = Category.objects.get(id=category_id)
+                form.fields['tags'].queryset = category.tags.all()
+            else:
+                form.fields['tags'].queryset = Tag.objects.none()
+        else:
+            form.fields['tags'].queryset = Tag.objects.none()
+        return form
 
 class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     model = Question
@@ -137,3 +168,26 @@ class TagQuestionListView(ListView):
     def get_queryset(self):
         tag = self.kwargs['tag']
         return Question.objects.filter(tags__name=tag)
+    
+class CategoryQuestionListView(ListView):
+    model = Question
+    template_name = 'stackbase/question_list.html'  # Replace with your actual template name
+    context_object_name = 'questions'
+    ordering = ['-date_created']
+
+    def get_queryset(self):
+        category_name = self.kwargs['category']
+        return Question.objects.filter(category__name=category_name)
+    
+def get_tags(request):
+    if request.method == 'GET':
+        category_id = request.GET.get('category_id')
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+                tags = category.tags.all()
+                data = [{'id': tag.id, 'name': tag.name} for tag in tags]
+                return JsonResponse(data, safe=False)
+            except Category.DoesNotExist:
+                pass
+    return JsonResponse([], safe=False)

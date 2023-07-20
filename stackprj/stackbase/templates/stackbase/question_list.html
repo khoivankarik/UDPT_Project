@@ -109,6 +109,17 @@
                     <h6 id="fh6" style="text-align: left;">{{ question.content|truncatewords:10}} <a href="{% url 'stackbase:question-detail' question.id%}">Read More</a></h6>
                     {% endif %}
                     <h6 id="fh6" style="font-size: 10px; font-style: italic; color: rgb(155, 155, 155);">Asked By: <a href="{% url 'profile' %}">{{ question.user }}</a>&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; On: {{question.date_created|date:"j F, Y"}}</h6>
+                    
+                    <h5 style="text-align: left; font-size: 12px; font-style: italic;">
+                        Category: {% if question.category %}
+                            <a href="{% url 'stackbase:category-question-lists' question.category.name %}" style="text-decoration: none;">
+                                <button class="btn btn-login">{{ question.category.name }}</button>
+                            </a>
+                        {% else %}
+                            None
+                        {% endif %}
+                    </h5>
+
                     <h5 style="text-align: left; font-size: 12px; font-style: italic;">Tags:
                         {% for tag in question.tags.all %}
                         <div class="tag-box">
