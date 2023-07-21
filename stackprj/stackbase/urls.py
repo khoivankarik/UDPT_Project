@@ -18,4 +18,5 @@ urlpatterns = [
     path('questions/tags/<str:tag>/', views.TagQuestionListView.as_view(), name="tag-question-lists"),
     path('get_tags/', views.get_tags, name='get_tags'),
     path('questions/category/<str:category>/', views.CategoryQuestionListView.as_view(), name="category-question-lists"),
+    path('questions/<int:question_id>/export/', views.export_question_comments, name="export_question_comments")
 ]

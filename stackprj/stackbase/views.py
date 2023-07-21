@@ -8,7 +8,7 @@ from .forms import CommentForm
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from urllib.parse import unquote
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 
 def home(request):
     return render(request, 'home.html')
@@ -191,3 +191,20 @@ def get_tags(request):
             except Category.DoesNotExist:
                 pass
     return JsonResponse([], safe=False)
+
+def export_question_comments(request, question_id):
+    # Fetch the question and its comments from the database
+    question = get_object_or_404(Question, id=question_id)
+    comments = question.comment.all()
+
+    # Create the content of the file (you can customize this based on your requirement)
+    content = f"Question Title: {question.title}\n\nQuestion Content:\n{question.content}\n\nComments:\n"
+
+    for comment in comments:
+        content += f"- {comment.content}\n"
+
+    # Create the HttpResponse with appropriate headers to trigger a download
+    response = HttpResponse(content, content_type="text/plain")
+    response["Content-Disposition"] = f"attachment; filename=question_{question_id}_comments.txt"
+
+    return response
