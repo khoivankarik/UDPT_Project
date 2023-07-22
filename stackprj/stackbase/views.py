@@ -129,12 +129,13 @@ class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
 
 class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     model = Question
-    context_object_name =  'question'
+    context_object_name = 'question'
     success_url = "/"
 
     def test_func(self):
-        questions = self.get_object()
-        if self.request.user == questions.user:
+        question = self.get_object()
+        user = self.request.user
+        if user == question.user or user.is_superuser:
             return True
         return False
 

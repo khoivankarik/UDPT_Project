@@ -2,13 +2,18 @@
 {% block content %}
 <section class="hero">
     <div class="hero-content">
-        <h1 class="hero-title">We <span><3 </span> people who code</h1>
+        <h1 class="hero-title">We <span><3 </span> Viet Nam</h1>
         <p class="hero-paragraph">
             We build products that empower developers and connect them to solutions that enable productivity, growth, and discovery.
         </p>
         <div class="hero-options">
             <a href="#" class="btn btn-developers">For developers</a>
-            <a href="#" class="btn btn-businesses">For businesses</a>
+            <a href="{% if user.is_authenticated %}
+            {% url 'stackbase:question-create' %}
+            {% else %}
+            {% url 'login' %}
+            {% endif %}" 
+            class="btn btn-businesses">Ask Question</a>
             <a href="{% url 'stackbase:question-lists' %}" class="btn btn-developers" style="margin-left: 5px;">Latest Questions</a>
 
         </div>
