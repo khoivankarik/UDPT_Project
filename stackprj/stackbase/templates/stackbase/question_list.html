@@ -92,9 +92,9 @@
             <h1 id="fh1">Top Questions</h1>
             <div>
                 <a class="btn btn-developers" href="">Export Data</a>
-                <a class="btn btn-businesses" href="?tab=today">Today</a>
-                <a class="btn btn-businesses" href="?tab=week">Week</a>
-                <a class="btn btn-businesses" href="?tab=month">Month</a>
+                <a class="btn btn-businesses" href="?tab=today{% if category %}&category={{ category }}{% endif %}">Today</a>
+                <a class="btn btn-businesses" href="?tab=week{% if category %}&category={{ category }}{% endif %}">Week</a>
+                <a class="btn btn-businesses" href="?tab=month{% if category %}&category={{ category }}{% endif %}">Month</a>
             </div>
             {% if user.is_authenticated %}
                 <button class="btn" id="logout-btn"><a id="fa" href="{% url 'stackbase:question-create'%}" style="color: white; text-decoration: none;">Ask Question</a></button>

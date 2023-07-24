@@ -10,6 +10,7 @@ from django.db.models import Q
 from urllib.parse import unquote
 from django.http import JsonResponse,HttpResponse
 from datetime import datetime, timedelta
+from django.http import QueryDict
 
 def home(request):
     return render(request, 'home.html')
@@ -129,6 +130,11 @@ class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_update'] = True  # Set is_update to True for update view
+        return context
+
     def test_func(self):
         question = self.get_object()
         if self.request.user == question.user:
@@ -147,6 +153,10 @@ class QuestionUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
         else:
             form.fields['tags'].queryset = Tag.objects.none()
         return form
+
+    def get_success_url(self):
+        return reverse_lazy('stackbase:question-detail', kwargs={'pk': self.object.pk})
+
 
 class QuestionDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     model = Question
@@ -183,13 +193,40 @@ class AddCommentView(CreateView):
 
 class TagQuestionListView(ListView):
     model = Question
-    template_name = 'stackbase/question_list.html'  # Replace with your actual template name
+    template_name = 'stackbase/question_list.html'
     context_object_name = 'questions'
     ordering = ['-date_created']
 
     def get_queryset(self):
         tag = self.kwargs['tag']
-        return Question.objects.filter(tags__name=tag)
+        tab = self.request.GET.get('tab', None)
+        query_params = QueryDict(mutable=True)
+        query_params.update(self.request.GET)
+        query_params.pop('tag', None)  # Remove the 'tag' parameter from the query params
+        query_string = query_params.urlencode()
+
+        if tab == 'today':
+            # Filter questions from today with the specified tag
+            start_date = datetime.now().date()
+            end_date = start_date + timedelta(days=1)
+            queryset = Question.objects.filter(tags__name=tag, date_created__gte=start_date, date_created__lt=end_date).order_by('-date_created')
+        elif tab == 'week':
+            # Filter questions from the past week with the specified tag
+            start_date = datetime.now() - timedelta(weeks=1)
+            queryset = Question.objects.filter(tags__name=tag, date_created__gte=start_date).order_by('-date_created')
+        elif tab == 'month':
+            # Filter questions from the past month with the specified tag
+            start_date = datetime.now() - timedelta(days=30)
+            queryset = Question.objects.filter(tags__name=tag, date_created__gte=start_date).order_by('-date_created')
+        else:
+            # Show all questions with the specified tag
+            queryset = Question.objects.filter(tags__name=tag).order_by('-date_created')
+
+        # Add the 'tab' parameter back to the query string
+        if tab:
+            query_string += f'&tab={tab}'
+        queryset = queryset.order_by('-date_created')
+        return queryset
     
 class CategoryQuestionListView(ListView):
     model = Question
@@ -201,6 +238,39 @@ class CategoryQuestionListView(ListView):
         category_name = self.kwargs['category']
         return Question.objects.filter(category__name=category_name)
     
+    def get_queryset(self):
+        category_name = self.kwargs['category']
+        tab = self.request.GET.get('tab', None)
+        query_params = QueryDict(mutable=True)
+        query_params.update(self.request.GET)
+        query_params.pop('category', None)  # Remove the 'category' parameter from the query params
+        query_string = query_params.urlencode()
+
+        if tab == 'today':
+            # Filter questions from today with the specified category
+            start_date = datetime.now().date()
+            end_date = start_date + timedelta(days=1)
+            queryset = Question.objects.filter(category__name=category_name, date_created__gte=start_date, date_created__lt=end_date).order_by('-date_created')
+        elif tab == 'week':
+            # Filter questions from the past week with the specified category
+            start_date = datetime.now() - timedelta(weeks=1)
+            queryset = Question.objects.filter(category__name=category_name, date_created__gte=start_date).order_by('-date_created')
+        elif tab == 'month':
+            # Filter questions from the past month with the specified category
+            start_date = datetime.now() - timedelta(days=30)
+            queryset = Question.objects.filter(category__name=category_name, date_created__gte=start_date).order_by('-date_created')
+        else:
+            # Show all questions with the specified category
+            queryset = Question.objects.filter(category__name=category_name).order_by('-date_created')
+
+        # Add the 'tab' parameter back to the query string
+        if tab:
+            query_string += f'&tab={tab}'
+        queryset = queryset.order_by('-date_created')
+        return queryset
+
+
+
 def get_tags(request):
     if request.method == 'GET':
         category_id = request.GET.get('category_id')
