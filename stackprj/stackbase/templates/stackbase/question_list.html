@@ -16,6 +16,7 @@
         }
         #fh1{
             margin-top: 20px;
+            margin-right: 450px;
         }
         #sub-nav{
             display: flex;
@@ -89,10 +90,16 @@
     <div class="container">
         <div id="sub-nav">
             <h1 id="fh1">Top Questions</h1>
+            <div>
+                <a class="btn btn-developers" href="">Export Data</a>
+                <a class="btn btn-businesses" href="?tab=today">Today</a>
+                <a class="btn btn-businesses" href="?tab=week">Week</a>
+                <a class="btn btn-businesses" href="?tab=month">Month</a>
+            </div>
             {% if user.is_authenticated %}
-            <button class="btn" id="logout-btn"><a id="fa" href="{% url 'stackbase:question-create'%}" style="color: white; text-decoration: none;">Ask Question</a></button>
+                <button class="btn" id="logout-btn"><a id="fa" href="{% url 'stackbase:question-create'%}" style="color: white; text-decoration: none;">Ask Question</a></button>
             {% else %}
-            <button class="btn" id="logout-btn"><a id="fa" href="{% url 'login' %}" style="color: white; text-decoration: none;">Ask Question</a></button>
+                <button class="btn" id="logout-btn"><a id="fa" href="{% url 'login' %}" style="color: white; text-decoration: none;">Ask Question</a></button>
             {% endif %}
         </div>
         <div class="list-question">

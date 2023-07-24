@@ -9,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from urllib.parse import unquote
 from django.http import JsonResponse,HttpResponse
+from datetime import datetime, timedelta
 
 def home(request):
     return render(request, 'home.html')
@@ -31,7 +32,6 @@ def like_view(request, pk):
 class QuestionListView(ListView):
     model = Question
     context_object_name = 'questions'
-    ordering = ['-date_created']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -56,9 +56,30 @@ class QuestionListView(ListView):
                 context['questions'] = context['questions'].filter(title_query)
 
             context['search_input'] = search_input
+
+        context['tab'] = self.request.GET.get('tab', None)
         return context
 
+    def get_queryset(self):
+        tab = self.request.GET.get('tab', None)
+        if tab == 'today':
+            # Filter questions from today
+            start_date = datetime.now().date()
+            end_date = start_date + timedelta(days=1)
+            queryset = Question.objects.filter(date_created__gte=start_date, date_created__lt=end_date).order_by('-date_created')
+        elif tab == 'week':
+            # Filter questions from the past week
+            start_date = datetime.now() - timedelta(weeks=1)
+            queryset = Question.objects.filter(date_created__gte=start_date).order_by('-date_created')
+        elif tab == 'month':
+            # Filter questions from the past month
+            start_date = datetime.now() - timedelta(days=30)
+            queryset = Question.objects.filter(date_created__gte=start_date).order_by('-date_created')
+        else:
+            # Default: Show all questions
+            queryset = Question.objects.all().order_by('-date_created')
 
+        return queryset
 class QuestionDetailView(DetailView):
     model = Question
 
