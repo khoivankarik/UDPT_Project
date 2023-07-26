@@ -91,7 +91,14 @@
         <div id="sub-nav">
             <h1 id="fh1">Top Questions</h1>
             <div>
-                <a class="btn btn-developers" href="">Export Data</a>
+                {% if category %}
+                    <a id="export-data-btn" class="btn btn-developers" href="#">Export Data</a>
+                {% elif tags %}
+                    <a id="export-data-btn" class="btn btn-developers" href="#">Export Data</a>
+                {% else %}
+                    <a id="export-data-btn" class="btn btn-developers" href="#">Export Data</a>
+                {% endif %}
+
                 <a class="btn btn-businesses" href="?tab=today{% if category %}&category={{ category }}{% endif %}">Today</a>
                 <a class="btn btn-businesses" href="?tab=week{% if category %}&category={{ category }}{% endif %}">Week</a>
                 <a class="btn btn-businesses" href="?tab=month{% if category %}&category={{ category }}{% endif %}">Month</a>
@@ -141,6 +148,44 @@
             </div>
         </div>   
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const exportDataBtn = document.getElementById('export-data-btn');
+
+            // Custom function to update the "Export Data" link's href
+            const updateExportDataLink = () => {
+                const currentUrl = window.location.pathname;
+                const queryParams = window.location.search;
+
+                // If a category is present in the URL, update the href accordingly
+                const categoryRegex = /\/category\/([^/]+)\/?/;
+                const categoryMatch = currentUrl.match(categoryRegex);
+                if (categoryMatch) {
+                    const category = categoryMatch[1];
+                    exportDataBtn.href = `/questions/category/${category}/export_data/${queryParams}`;
+                    return;
+                }
+
+                // If a tag is present in the URL, update the href accordingly
+                const tagRegex = /\/tags\/([^/]+)\/?/;
+                const tagMatch = currentUrl.match(tagRegex);
+                if (tagMatch) {
+                    const tag = tagMatch[1];
+                    exportDataBtn.href = `/questions/tags/${tag}/export_data/${queryParams}`;
+                    return;
+                }
+
+                // For other URLs, update the href for the default Export Data link
+                exportDataBtn.href = `/questions/export_data/${queryParams}`;
+            };
+
+            // Call the updateExportDataLink function initially and whenever the user navigates to a new page
+            updateExportDataLink();
+            window.addEventListener('popstate', updateExportDataLink);
+        });
+    </script>
+
 </body>
 </html>
 {% endblock content %}

@@ -11,6 +11,9 @@ from urllib.parse import unquote
 from django.http import JsonResponse,HttpResponse
 from datetime import datetime, timedelta
 from django.http import QueryDict
+from django.views import View
+import csv
+from urllib.parse import urlencode
 
 def home(request):
     return render(request, 'home.html')
@@ -233,10 +236,6 @@ class CategoryQuestionListView(ListView):
     template_name = 'stackbase/question_list.html'  # Replace with your actual template name
     context_object_name = 'questions'
     ordering = ['-date_created']
-
-    def get_queryset(self):
-        category_name = self.kwargs['category']
-        return Question.objects.filter(category__name=category_name)
     
     def get_queryset(self):
         category_name = self.kwargs['category']
@@ -300,3 +299,42 @@ def export_question_comments(request, question_id):
     response["Content-Disposition"] = f"attachment; filename=question_{question_id}_comments.txt"
 
     return response
+
+class ExportDataView(View):
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="questions_data.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['Title', 'Content', 'Asked By', 'Date Asked', 'Category', 'Tags', 'Comment', 'Commented By'])
+
+        category_name = self.kwargs.get('category')
+        tag_name = self.kwargs.get('tag')
+
+        if category_name:
+            category = get_object_or_404(Category, name=category_name)
+            questions = Question.objects.filter(category=category)
+        elif tag_name:
+            tags = get_object_or_404(Tag, name=tag_name)
+            questions = Question.objects.filter(tags=tags)
+        else:
+            questions = Question.objects.all()
+
+        for question in questions:
+            title = question.title
+            content = question.content
+            asked_by = question.user.username
+            date_asked = question.date_created.strftime('%Y-%m-%d %H:%M:%S')
+            category = question.category.name if question.category else ''
+            tags = ', '.join([tag.name for tag in question.tags.all()])
+
+            comments = Comment.objects.filter(question=question)
+            if comments.exists():
+                for comment in comments:
+                    comment_content = comment.content
+                    commented_by = comment.name
+                    writer.writerow([title, content, asked_by, date_asked, category, tags, comment_content, commented_by])
+            else:
+                writer.writerow([title, content, asked_by, date_asked, category, tags, '', ''])
+
+        return response
