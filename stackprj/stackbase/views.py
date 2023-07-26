@@ -14,6 +14,9 @@ from django.http import QueryDict
 from django.views import View
 import csv
 from urllib.parse import urlencode
+from django.utils.encoding import smart_str
+from io import StringIO
+from django.utils.safestring import mark_safe
 
 def home(request):
     return render(request, 'home.html')
@@ -302,10 +305,16 @@ def export_question_comments(request, question_id):
 
 class ExportDataView(View):
     def get(self, request, *args, **kwargs):
+        # Create a StringIO buffer to hold CSV data
+        buffer = StringIO()
+        writer = csv.writer(buffer)
+
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="questions_data.csv"'
 
-        writer = csv.writer(response)
+        # Write the BOM (Byte Order Mark) to the response to indicate UTF-8 encoding
+        response.write('\ufeff')
+
         writer.writerow(['Title', 'Content', 'Asked By', 'Date Asked', 'Category', 'Tags', 'Comment', 'Commented By'])
 
         category_name = self.kwargs.get('category')
@@ -321,20 +330,22 @@ class ExportDataView(View):
             questions = Question.objects.all()
 
         for question in questions:
-            title = question.title
-            content = question.content
-            asked_by = question.user.username
+            title = smart_str(question.title)  # Use smart_str to ensure correct encoding of title
+            content = smart_str(question.content)
+            asked_by = smart_str(question.user.username)
             date_asked = question.date_created.strftime('%Y-%m-%d %H:%M:%S')
-            category = question.category.name if question.category else ''
-            tags = ', '.join([tag.name for tag in question.tags.all()])
+            category = smart_str(question.category.name if question.category else '')
+            tags = ', '.join([smart_str(tag.name) for tag in question.tags.all()])
 
             comments = Comment.objects.filter(question=question)
             if comments.exists():
                 for comment in comments:
-                    comment_content = comment.content
-                    commented_by = comment.name
+                    comment_content = smart_str(comment.content)
+                    commented_by = smart_str(comment.name)
                     writer.writerow([title, content, asked_by, date_asked, category, tags, comment_content, commented_by])
             else:
                 writer.writerow([title, content, asked_by, date_asked, category, tags, '', ''])
 
+        # Set the CSV data to the response and return
+        response.write(buffer.getvalue())
         return response
