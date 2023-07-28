@@ -36,6 +36,17 @@ def like_view(request, pk):
         liked = True
     return HttpResponseRedirect(reverse('stackbase:question-detail', args=[str(pk)]))
 
+def like_comment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+    liked = False
+    if comment.likes.filter(id=request.user.id).exists():
+        comment.likes.remove(request.user)
+        liked = False
+    else:
+        comment.likes.add(request.user)
+        liked = True
+    return HttpResponseRedirect(reverse('stackbase:question-detail', args=[str(comment.question.pk)]))
+
 class QuestionListView(ListView):
     model = Question
     context_object_name = 'questions'

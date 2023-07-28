@@ -38,13 +38,18 @@ class Comment(models.Model):
     question = models.ForeignKey(Question, related_name="comment", on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     content = RichTextField()
-    date_created = models.DateTimeField(default=timezone.now)   
+    date_created = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(User, related_name='comment_likes')
+   
 
     def __str__(self):
         return '%s - %s' % (self.question.title, self.question.user)
 
     def get_success_url(self):
         return reverse('stackbase:question-detail', kwargs={'pk':self.pk})
+    
+    def total_likes(self):
+        return self.likes.count()
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

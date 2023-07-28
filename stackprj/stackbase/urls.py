@@ -24,5 +24,6 @@ urlpatterns = [
     path('questions/tags/<str:tag>/export_data/', views.ExportDataView.as_view(), name="export-data-tag"),
     path('questions/export_data/', views.ExportDataView.as_view(), name="export-data"),
     
-    
+    path('like-comment/<int:pk>/', views.like_comment, name="like_comment"),
+
 ]

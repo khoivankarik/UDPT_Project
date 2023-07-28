@@ -121,9 +121,25 @@
                         <h3>No Answers yet... <a href="">Answer Question</a> </h3>
                     {% else %}
                         {% for comment in question.comment.all %}
-                            <h3 style="font-weight: normal; font-size: 15px;">{{comment.content|safe}}</h3>
-                            <h3 style="font-size: 10px;">Answered by: <i><a href="">{{comment.name}}</a> - On: {{comment.date_created|date:"j F, Y"}}</i></h3>
-                            <hr>  
+                            <h3 style="font-weight: normal; font-size: 15px;">{{ comment.content|safe }}</h3>
+                            <h3 style="font-size: 10px;">Answered by: <i><a href="">{{ comment.name }}</a> - On: {{ comment.date_created|date:"j F, Y" }}</i></h3>
+                            <form action="{% url 'stackbase:like_comment' comment.pk %}" method="POST">
+                                {% csrf_token %}
+                                {% if user.is_authenticated %}
+                                    {% if comment.liked %}
+                                        <div style="display: flex; align-items: center; margin-left: 10px;">
+                                            <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 60px;"><img src="https://image.similarpng.com/very-thumbnail/2020/06/Dislike-icon-transparent-PNG.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ comment.total_likes }} Likes</h5>
+                                        </div>
+                                    {% else %}
+                                        <div style="display: flex; align-items: center; margin-left: 10px;">
+                                            <button type="submit" name="question_id" value="{{ question.id }}" style="border: none; border-radius: 30px;"><img src="https://i.pinimg.com/originals/39/44/6c/39446caa52f53369b92bc97253d2b2f1.png" alt="" style="width: 40px;"></button> <h5 style="margin-left: 10px; cursor: pointer;"> |  {{ comment.total_likes }} Likes</h5>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <h5 style="margin-left: 10px; cursor: pointer;"><a href="{% url 'login' %}">Login</a> to Like Comment |  {{ comment.total_likes }} Likes</h5>
+                                {% endif %}
+                            </form>
+                            <hr>
                         {% endfor %}
                     {% endif %}
 
