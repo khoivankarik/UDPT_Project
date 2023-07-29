@@ -17,6 +17,7 @@ from urllib.parse import urlencode
 from django.utils.encoding import smart_str
 from io import StringIO
 from django.utils.safestring import mark_safe
+from django.contrib import messages
 
 def home(request):
     return render(request, 'home.html')
@@ -113,6 +114,30 @@ class QuestionDetailView(DetailView):
         context['liked'] = liked
         return context
 
+def is_valid_text(text):
+    # List of words that are not allowed in the text
+    blacklist_words = [
+    'fuck','bitch','whore','asshole','shit','bastard','cunt','dick','pussy',
+    'cock','retard','slut','wanker','jerk','prick','twat','douche','douchebag',
+    'moron','idiot','dumbass','dipshit','motherfucker','sonofabitch','bullshit',
+    'crap','arse','bollocks','frick','tits','boobs'
+]
+
+    # Minimum length required for the text
+    min_length = 10
+
+    # Check if the text contains any blacklisted words
+    for word in blacklist_words:
+        if word.lower() in text.lower():
+            return False
+
+    # Check if the text meets the minimum length requirement
+    if len(text) < min_length:
+        return False
+
+    # If the text passes all checks, it is considered valid
+    return True
+
 class QuestionCreateView(LoginRequiredMixin, CreateView):
     model = Question
     fields = ['title', 'content', 'category', 'tags']
@@ -120,9 +145,17 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         if form.instance.category is None:
-            # Handle case where category is not selected
             form.add_error('category', 'Please select a category.')
             return self.form_invalid(form)
+
+        # Validate question title and content
+        if not is_valid_text(form.cleaned_data['title']):
+            messages.error(self.request, 'Invalid question title.')
+            return self.form_invalid(form)
+        if not is_valid_text(form.cleaned_data['content']):
+            messages.error(self.request, 'Invalid question content.')
+            return self.form_invalid(form)
+
         form.instance.user = self.request.user
         return super().form_valid(form)
 
@@ -204,9 +237,14 @@ class AddCommentView(CreateView):
     template_name = 'stackbase/question-answer.html'
 
     def form_valid(self, form):
+        if not is_valid_text(form.cleaned_data['content']):
+            messages.error(self.request, 'Invalid comment content.')
+            return self.form_invalid(form)
         form.instance.question_id = self.kwargs['pk']
         return super().form_valid(form)
-    success_url = reverse_lazy('stackbase:question-lists')
+    
+    def get_success_url(self):
+        return reverse_lazy('stackbase:question-detail', kwargs={'pk': self.kwargs['pk']})
 
 class TagQuestionListView(ListView):
     model = Question
