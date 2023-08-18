@@ -175,7 +175,12 @@
                         {% endif %}
                     </form> -->
                     
-                    <a class="btn btn-outline-primary" id="fa" href="{% url 'stackbase:question-comment' question.id %}" style="text-decoration: none;">Answer Question</a>
+                    <a class="btn btn-outline-primary" id="fa" href="{% if user.is_authenticated %}
+                    {% url 'stackbase:question-comment' question.id %}
+                    {% else %}
+                        {% url 'login' %}
+                    {% endif %}" style="text-decoration: none;">Answer Question</a>
+
                     <a style="text-decoration: none; " class="btn btn-outline-success" href="{% url 'stackbase:question-update' question.pk %}">&#x270E;</a>
                     <a style="text-decoration: none; " class="btn btn-outline-danger" href="{% url 'stackbase:question-delete' question.id %}">&#x2716;</a>
                     <a style="text-decoration: none; " class="btn btn-outline-secondary" href="{% url 'stackbase:question-lists' %}">&#x21a9;</a>
@@ -183,6 +188,12 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-info">Download</button>
                     </form>
+                    <a style="text-decoration: none; " class="btn btn-outline-warning" href="{% if user.is_authenticated %}
+                    {% url 'stackbase:report-question' question.id %}
+                    {% else %}
+                    {% url 'login' %}
+                    {% endif %}">Report</a>
+
                 </div> <br><br>
                     <!-- Answer Section -->
                 

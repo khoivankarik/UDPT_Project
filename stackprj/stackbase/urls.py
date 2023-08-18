@@ -25,5 +25,6 @@ urlpatterns = [
     path('questions/export_data/', views.ExportDataView.as_view(), name="export-data"),
     
     path('like-comment/<int:pk>/', views.like_comment, name="like_comment"),
+    path('questions/<int:pk>/report/', views.ReportDetailView.as_view(), name="report-question"),
 
 ]

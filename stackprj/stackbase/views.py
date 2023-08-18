@@ -3,8 +3,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .models import Question, Comment, Tag, Category
-from .forms import CommentForm
+from .models import Question, Comment, Tag, Category, Report
+from .forms import CommentForm, ReportForm
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from urllib.parse import unquote
@@ -398,3 +398,22 @@ class ExportDataView(View):
         # Set the CSV data to the response and return
         response.write(buffer.getvalue())
         return response
+    
+class ReportDetailView(CreateView):
+    model = Report
+    form_class = ReportForm
+    template_name = 'stackbase/Report_detail.html'
+
+    def form_valid(self, form):
+        if not is_valid_text(form.cleaned_data['description']):
+            messages.error(self.request, 'Invalid report description.')
+            return self.form_invalid(form)
+        
+        question = get_object_or_404(Question, pk=self.kwargs['pk'])
+        form.instance.user = self.request.user
+        form.instance.question = question
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Report submitted successfully.')
+        return reverse_lazy('stackbase:question-detail', kwargs={'pk': self.kwargs['pk']})

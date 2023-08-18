@@ -53,3 +53,20 @@ class Comment(models.Model):
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+class Report(models.Model):
+    REASON_CHOICES = (
+        ('inappropriate_content', 'Inappropriate Content'),
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        # Add more choices as needed
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=50, choices=REASON_CHOICES)
+    description = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'Report by {self.user.username} on {self.question.title}'
