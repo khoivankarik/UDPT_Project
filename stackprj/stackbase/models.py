@@ -33,6 +33,10 @@ class Question(models.Model):
     
     def total_likes(self):
         return self.likes.count()
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.user.profile.update_score()
 
 class Comment(models.Model):
     question = models.ForeignKey(Question, related_name="comment", on_delete=models.CASCADE)
@@ -54,6 +58,9 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.question.user.profile.update_score()
 class Report(models.Model):
     REASON_CHOICES = (
         ('inappropriate_content', 'Inappropriate Content'),
