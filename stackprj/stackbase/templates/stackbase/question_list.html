@@ -16,7 +16,7 @@
         }
         #fh1{
             margin-top: 20px;
-            margin-right: 450px;
+            margin-right: 320px;
         }
         #sub-nav{
             display: flex;
@@ -98,6 +98,7 @@
                 {% else %}
                     <a id="export-data-btn" class="btn btn-developers" href="#">Export Data</a>
                 {% endif %}
+                <a class="btn btn-businesses" href="{% url 'stackbase:question-lists' %}">Latest Question</a>
 
                 <a class="btn btn-businesses" href="?tab=today{% if category %}&category={{ category }}{% endif %}">Today</a>
                 <a class="btn btn-businesses" href="?tab=week{% if category %}&category={{ category }}{% endif %}">Week</a>

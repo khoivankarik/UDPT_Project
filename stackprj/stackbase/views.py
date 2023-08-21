@@ -241,6 +241,7 @@ class AddCommentView(CreateView):
             messages.error(self.request, 'Invalid comment content.')
             return self.form_invalid(form)
         form.instance.question_id = self.kwargs['pk']
+        form.instance.name = self.request.user.username
         return super().form_valid(form)
     
     def get_success_url(self):
