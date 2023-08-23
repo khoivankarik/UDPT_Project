@@ -7,7 +7,7 @@
             We build products that empower developers and connect them to solutions that enable productivity, growth, and discovery.
         </p>
         <div class="hero-options">
-            <a href="#" class="btn btn-developers">For developers</a>
+            <a class="btn btn-developers" href="{% url 'stackbase:leaderboard' %}">Leaderboard</a>
             <a href="{% if user.is_authenticated %}
             {% url 'stackbase:question-create' %}
             {% else %}
@@ -15,7 +15,7 @@
             {% endif %}" 
             class="btn btn-businesses">Ask Question</a>
             <a href="{% url 'stackbase:question-lists' %}" class="btn btn-developers" style="margin-left: 5px;">Latest Questions</a>
-
+            
         </div>
     </div>
 </section>

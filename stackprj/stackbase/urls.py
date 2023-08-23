@@ -27,4 +27,5 @@ urlpatterns = [
     path('like-comment/<int:pk>/', views.like_comment, name="like_comment"),
     path('questions/<int:pk>/report/', views.ReportDetailView.as_view(), name="report-question"),
 
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
 ]

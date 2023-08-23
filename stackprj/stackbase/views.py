@@ -25,7 +25,7 @@ from io import StringIO
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 from stackusers.models import Profile
-
+from django.db.models import F
 
 def home(request):
     return render(request, "home.html")
@@ -554,3 +554,9 @@ class ReportDetailView(CreateView):
         return reverse_lazy(
             "stackbase:question-detail", kwargs={"pk": self.kwargs["pk"]}
         )
+
+def leaderboard(request):
+    # Get user profiles ordered by score in descending order
+    profiles = Profile.objects.annotate(rank=F('score')).order_by('-score')
+
+    return render(request, 'stackbase/chart.html', {'profiles': profiles})
