@@ -1,209 +1,223 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>UDPT-N07</title>
-    <link rel="shortcut icon" href="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico?v=ec617d715196">
-    <link rel="apple-touch-icon" href="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a">
-    <link rel="image_src" href="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
     <!-- <link rel="stylesheet" href="assets/css/main.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
 
-    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'main.css' %}" />
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> -->
-
-</head>
-<body>
-
-<header>
-
-<div class="nav-container">
-    <nav>
-        <div class="nav-base-links">
+  </head>
+  <body>
+    <header>
+      <div class="nav-container">
+        <nav>
+          <div class="nav-base-links">
             <ul>
-                <li><a href="{% url 'stackbase:home' %}">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="{% url 'stackbase:leaderboard' %}">Leaderboard</a></li>
-                <li><a href="{% url 'stackbase:question-lists' %}">Latest Question</a></li>
+              <li><a href="{% url 'stackbase:home' %}">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li>
+                <a href="{% url 'stackbase:leaderboard' %}">Leaderboard</a>
+              </li>
+              <li>
+                <a href="{% url 'stackbase:question-lists' %}"
+                  >Latest Question</a
+                >
+              </li>
             </ul>
-        </div>
-        <div class="nav-search">
+          </div>
+          <div class="nav-search">
             <div class="search-container">
-                <i class="fas fa-search"></i>
-                <form action="{% url 'stackbase:question-lists' %}" method="GET">
-                    <input type="text" id="search-bar" name="search-bar" placeholder="Search..." value="{{ search_input }}">
-                    <button type="submit" style="border-radius: 25px; border: none; padding: px;">Search</button>
-                </form>
+              <i class="fas fa-search"></i>
+              <form action="{% url 'stackbase:question-lists' %}" method="GET">
+                <input
+                  type="text"
+                  id="search-bar"
+                  name="search-bar"
+                  placeholder="Search..."
+                  value="{{ search_input }}"
+                />
+                <button
+                  type="submit"
+                  style="border-radius: 25px; border: none; padding: px"
+                >
+                  Search
+                </button>
+              </form>
             </div>
             <div class="search-hints">
-                <div class="search-arrow-up"></div>
-                <div class="search-hint-body">
-                    <div class="hints-grid-column">
-                        <div class="hint-text"><span>[tag] </span> search within a tag</div>
-                        <div class="hint-text"><span>user:1234 </span>  search by author</div>
-                        <div class="hint-text"><span>"words here"</span> exact phrase </div>
-                    </div>
-                    <div class="hints-grid-column">
-                        <div class="hint-text"><span>answers:0</span> unanswered questions</div>
-                        <div class="hint-text"><span> score:3  </span> posts with a 3+ score</div>
-                    </div>
+              <div class="search-arrow-up"></div>
+              <div class="search-hint-body">
+                <div class="hints-grid-column">
+                  <div class="hint-text">
+                    <span>[tag] </span> search within a tag
+                  </div>
+                  <div class="hint-text">
+                    <span>user:1234 </span> search by author
+                  </div>
+                  <div class="hint-text">
+                    <span>"words here"</span> exact phrase
+                  </div>
                 </div>
-                <div class="search-hint-footer">
-                    <a href="#" class="btn">Ask a question</a>
-                    <a href="#" class="search-help">Search help</a>
+                <div class="hints-grid-column">
+                  <div class="hint-text">
+                    <span>answers:0</span> unanswered questions
+                  </div>
+                  <div class="hint-text">
+                    <span> score:3 </span> posts with a 3+ score
+                  </div>
                 </div>
+              </div>
+              <div class="search-hint-footer">
+                <a href="#" class="btn">Ask a question</a>
+                <a href="#" class="search-help">Search help</a>
+              </div>
             </div>
-
-        </div>
-        <div class="nav-right-buttons">
+          </div>
+          <div class="nav-right-buttons">
             <div class="search-btn">
-                <i class="fas fa-search"></i>
+              <i class="fas fa-search"></i>
             </div>
             {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn btn-login">Profile</a>
-                <a href="{% url 'logout' %}" class="btn btn-register">Logout</a> 
+            <a href="{% url 'profile' %}" class="btn btn-login">Profile</a>
+            <a href="{% url 'logout' %}" class="btn btn-register">Logout</a>
             {% else %}
-                <a href="{% url 'login' %}" class="btn btn-login">Log in</a>
-                <a href="{% url 'register' %}" class="btn btn-register">Sign up</a> 
+            <a href="{% url 'login' %}" class="btn btn-login">Log in</a>
+            <a href="{% url 'register' %}" class="btn btn-register">Sign up</a>
             {% endif %}
-        </div>
-    </nav>
-</div>
-<!-- <h1 style="font-size: 20px;">hello</h1> -->
-    <div style="margin-top: 10px;">
-        {% if messages %}
-        {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}" role="alert">
-        <h4 style="text-align: center;">{{ message }}</h4>
+          </div>
+        </nav>
       </div>
-      {% endfor %}
-    {% endif %}
-    </div>
-
-        
-</header>
-
-<!-- Add block content here -->
-<!-- Add enbdblock content here -->
-
-{% block content %}
-
-{% endblock content %}
-
-
-<footer class="footer">
-    <img src="https://cdn.sstatic.net/Img/home/robot.svg?v=dfa16a330cbd" alt="" class="footer-robot-img">
-<div class="container">
-    <div class="footer-content">
-        <div class="footer-icon">
-            <i class="fab fa-stack-overflow"></i>
+      <!-- <h1 style="font-size: 20px;">hello</h1> -->
+      <div style="margin-top: 10px">
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          <h4 style="text-align: center">{{ message }}</h4>
         </div>
-        <div class="footer-nav">
+        {% endfor %} {% endif %}
+      </div>
+    </header>
+
+    <!-- Add block content here -->
+    <!-- Add enbdblock content here -->
+
+    {% block content %} {% endblock content %}
+
+    <footer class="footer">
+      <img
+        src="https://cdn.sstatic.net/Img/home/robot.svg?v=dfa16a330cbd"
+        alt=""
+        class="footer-robot-img"
+      />
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-nav">
             <div class="footer-nav-col">
-                <div class="footer-links-title"><a href="#">Stack Overflow</a></div>
-                <ul class="footer-links">
-                    <li class="footer-link-item"><a href="#" class="footer-link">Questions</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Jobs</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Developer Jobs Directory</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Salary Calculator</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Help</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Mobile</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Disable Responsiveness</a></li>
-                </ul>
+              <div class="footer-links-title"><h3>Thành viên nhóm 7</h3></div>
+              <ul class="footer-links">
+                <li class="footer-link-item">
+                  <h3 class="footer-link">Nguyễn Ngọc Anh Khoa</h3>
+                </li>
+                <li class="footer-link-item">
+                  <h3 class="footer-link">Văn Đình Khôi</h3>
+                </li>
+                <li class="footer-link-item">
+                  <h3 class="footer-link">Lê Hoàng Thịnh Phước</h3>
+                </li>
+              </ul>
             </div>
             <div class="footer-nav-col">
-                <div class="footer-links-title"><a href="#">Products</a></div>
-                <ul class="footer-links">
-                    <li class="footer-link-item"><a href="#" class="footer-link">Teams</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Talent</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Advertising</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Enterprise</a></li>
-                </ul>
+              <div class="footer-links-title"><h3>Mã số sinh viên</h3></div>
+              <ul class="footer-links">
+                <li class="footer-link-item">
+                  <h3 class="footer-link">19127445</h3>
+                </li>
+                <li class="footer-link-item">
+                  <h3 class="footer-link">19127454</h3>
+                </li>
+                <li class="footer-link-item">
+                  <h3 class="footer-link">19127518</h3>
+                </li>
+              </ul>
             </div>
             <div class="footer-nav-col">
-                <div class="footer-links-title"><a href="#">Company</a></div>
-                <ul class="footer-links">
-                    <li class="footer-link-item"><a href="#" class="footer-link">About</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Press</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Work Here</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Legal</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Privacy Policy</a></li>
-                    <li class="footer-link-item"><a href="#" class="footer-link">Contact Us</a></li>
-                </ul>
+              <div class="footer-links-title"><h3>Giáo viên Lý thuyết</h3></div>
+              <ul class="footer-links">
+                <li class="footer-link-item">
+                  <h3 class="footer-link">Nguyễn Trường Sơn</h3>
+                  <div class="footer-arrow-icon">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </li>
+              </ul>
             </div>
             <div class="footer-nav-col">
-                <div class="footer-links-title"><a href="#">Stack Exchange Network</a></div>
-                <ul class="footer-links">
-                    <li class="footer-link-item">
-                        <a href="#" class="footer-link">Technology</a>
-                        <div class="footer-arrow-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </li>
-                    <li class="footer-link-item">
-                        <a href="#" class="footer-link">Life / Arts</a>
-                        <div class="footer-arrow-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </div></li>
-                    <li class="footer-link-item">
-                        <a href="#" class="footer-link">Culture / Recreation</a>
-                        <div class="footer-arrow-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </li>
-                    <li class="footer-link-item">
-                        <a href="#" class="footer-link">Science</a>
-                        <div class="footer-arrow-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </li>
-                    <li class="footer-link-item">
-                        <a href="#" class="footer-link">Other</a>
-                        <div class="footer-arrow-icon">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </li>
-                </ul>
+              <div class="footer-links-title"><h3>Giáo viên Thực hành</h3></div>
+              <ul class="footer-links">
+                <li class="footer-link-item">
+                  <h3 class="footer-link">Phạm Minh Tú</h3>
+                  <div class="footer-arrow-icon">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+                </li>
+              </ul>
             </div>
-        </div>
-        <div class="footer-another-links">
+          </div>
+          <div class="footer-another-links">
             <div class="social-media">
-                <ul>
-                    <li>
-                        <a href="#">Blog</a>
-                    </li>
-                    <li>
-                        <a href="#">Facebook</a>
-                    </li>
-                    <li>
-                        <a href="#">Twitter</a>
-                    </li>
-                    <li>
-                        <a href="#">LinkedIn</a>
-                    </li>
-                    <li>
-                        <a href="#">Instagram</a>
-                    </li>
-                </ul>
+              <ul>
+                <li>
+                  <h3>HCMUS</h3>
+                </li>
+                <li>
+                  <h3>Information System</h3>
+                </li>
+                <li>
+                  <h3>Ứng dụng phân tán</h3>
+                </li>
+                <li>
+                  <h3>19HTTT</h3>
+                </li>
+              </ul>
             </div>
             <div class="copyright">
-                <p>site design / logo © 2020 Stack Exchange Inc; user contributions licensed under <a href="https://stackoverflow.com/help/licensing">cc by-sa</a>. rev 2020.10.2.37725</p>
+              <p>Đồ án thực hành - Nhóm 7</p>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </footer>
 
-</div>
-</footer>
-
-<!-- <script src="assets/js/main.js"></script> -->
-<script src="{% static 'main.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
-</body>
+    <!-- <script src="assets/js/main.js"></script> -->
+    <script src="{% static 'main.js' %}"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+      integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+      integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
