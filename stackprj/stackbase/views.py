@@ -84,48 +84,26 @@ class QuestionListView(ListView):
             # Generate queries for tags and titles
             tag_query = Q(tags__name__in=tags)
             title_query = Q()
+            content_query = Q()
+
             for title in titles:
                 title_query |= Q(title__icontains=title)
+                content_query |= Q(content__icontains=title)
 
             # Apply filters to the questions queryset
             if tags:
                 context["questions"] = context["questions"].filter(
-                    tag_query & title_query
+                    tag_query & (title_query | content_query)
                 )
             else:
-                context["questions"] = context["questions"].filter(title_query)
+                context["questions"] = context["questions"].filter(
+                    title_query | content_query
+                )
 
             context["search_input"] = search_input
 
         context["tab"] = self.request.GET.get("tab", None)
         return context
-
-    def get_queryset(self):
-        tab = self.request.GET.get("tab", None)
-        if tab == "today":
-            # Filter questions from today
-            start_date = datetime.now().date()
-            end_date = start_date + timedelta(days=1)
-            queryset = Question.objects.filter(
-                date_created__gte=start_date, date_created__lt=end_date
-            ).order_by("-date_created")
-        elif tab == "week":
-            # Filter questions from the past week
-            start_date = datetime.now() - timedelta(weeks=1)
-            queryset = Question.objects.filter(date_created__gte=start_date).order_by(
-                "-date_created"
-            )
-        elif tab == "month":
-            # Filter questions from the past month
-            start_date = datetime.now() - timedelta(days=30)
-            queryset = Question.objects.filter(date_created__gte=start_date).order_by(
-                "-date_created"
-            )
-        else:
-            # Default: Show all questions
-            queryset = Question.objects.all().order_by("-date_created")
-
-        return queryset
 
 
 class QuestionDetailView(DetailView):
